@@ -1,0 +1,66 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch",
+      "Bash",
+      "WebSearch",
+      "mcp__playwright"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "playwright",
+    "context7",
+    "sequential-thinking",
+    "shadcn"
+  ],
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/pre-write-quality-check.sh",
+            "statusMessage": "코드 품질 검증 중..."
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/post-write-e2e-test.sh",
+            "statusMessage": "E2E 테스트 실행 중..."
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "permission_prompt",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/slack-permission-notify.sh",
+            "statusMessage": "Slack 알림 전송 중..."
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/slack-completion-notify.sh",
+            "statusMessage": "작업 완료 알림 전송 중..."
+          }
+        ]
+      }
+    ]
+  }
+}
