@@ -1,5 +1,12 @@
 # Claude Next.js Starters 프로젝트 가이드
 
+## Project Context
+
+프로젝트 개발 시 다음 문서들을 참고하세요:
+
+- **PRD 문서**: @docs/PRD.md
+- **개발 로드맵**: @docs/ROADMAP.md
+
 ## 프로젝트 개요
 
 Next.js 16과 최신 React 19 기반의 모던 웹 애플리케이션 스타터 템플릿입니다.
@@ -273,3 +280,7 @@ npx tsc --noEmit
 
 **마지막 업데이트**: 2026-02-02
 **유지관리자**: Claude Code Assistant
+
+## Task Master AI Instructions
+**Import Task Master's development workflow commands and guidelines, treat as if import is in the main CLAUDE.md file.**
+@./.taskmaster/CLAUDE.md
