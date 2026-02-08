@@ -1,0 +1,49 @@
+{
+  "tasks": [
+    {
+      "id": "813ec77a-8781-44c3-8efe-0be6d6de3775",
+      "name": "환경 변수 및 Notion 패키지 설정",
+      "description": "Notion API 연동을 위한 필수 패키지를 설치하고 환경 변수 파일을 설정합니다. @notionhq/client와 date-fns 패키지를 설치하고, .env.local 및 .env.example 파일을 생성/업데이트하여 Notion API 키와 데이터베이스 ID를 안전하게 관리합니다.",
+      "notes": "API 키는 절대 Git에 커밋하지 않도록 주의. .gitignore에 .env*가 이미 설정되어 있음 (line 34). 환경 변수 이름은 NEXT_PUBLIC_ 접두사를 사용하지 않음 (서버 사이드에서만 사용).",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2026-02-08T07:50:30.315Z",
+      "updatedAt": "2026-02-08T07:55:02.755Z",
+      "relatedFiles": [
+        {
+          "path": "package.json",
+          "type": "TO_MODIFY",
+          "description": "Notion 관련 패키지 추가",
+          "lineStart": 11,
+          "lineEnd": 26
+        },
+        {
+          "path": ".env.example",
+          "type": "TO_MODIFY",
+          "description": "Notion 환경 변수 추가",
+          "lineStart": 1,
+          "lineEnd": 7
+        },
+        {
+          "path": ".env.local",
+          "type": "CREATE",
+          "description": "Notion API 키 및 데이터베이스 ID 저장 (Git 무시)",
+          "lineStart": 1,
+          "lineEnd": 10
+        },
+        {
+          "path": ".gitignore",
+          "type": "REFERENCE",
+          "description": "환경 변수 파일 제외 확인",
+          "lineStart": 33,
+          "lineEnd": 35
+        }
+      ],
+      "implementationGuide": "1. 패키지 설치:\n   npm install @notionhq/client date-fns\n\n2. .env.local 파일 생성 (Git 무시됨):\n   NOTION_API_KEY=secret_xxxxx\n   NOTION_DATABASE_ID=xxxxx\n\n3. .env.example 파일 업데이트 (Git 포함):\n   기존 내용 유지하고 다음 추가:\n   # Notion CMS 설정\n   NOTION_API_KEY=your_notion_api_key_here\n   NOTION_DATABASE_ID=your_notion_database_id_here\n\n4. .gitignore 확인:\n   .env* 패턴이 이미 존재하므로 추가 수정 불필요\n\n5. package.json 확인:\n   dependencies에 @notionhq/client와 date-fns가 추가되었는지 확인",
+      "verificationCriteria": "1. npm list @notionhq/client date-fns 명령으로 패키지 설치 확인\n2. .env.local 파일 존재 및 내용 확인 (API 키 형식 검증)\n3. .env.example 파일에 Notion 관련 변수 추가 확인\n4. .gitignore에 .env* 패턴 존재 확인\n5. TypeScript 컴파일 에러 없음 (npm run build)",
+      "analysisResult": "Phase 1: 프로젝트 초기 설정의 목표는 Notion CMS 기반 개인 개발 블로그의 견고한 개발 환경을 구축하고 Notion API와의 연동을 완료하는 것입니다. 기술 스택은 Next.js 16.1.6, React 19.2.3, TypeScript strict 모드를 사용하며, 기존 프로젝트 구조와 패턴을 유지하면서 블로그 전용 기능을 추가합니다.\n\n핵심 원칙:\n1. API 키 보안 관리: 환경 변수는 .env.local에 저장하며 절대 Git에 커밋하지 않음\n2. TypeScript 타입 안정성: strict 모드에서 모든 타입을 명시적으로 정의\n3. 프로젝트 구조 일관성: 기존 디렉토리 계층 (lib/, types/, components/, app/)을 유지\n4. Path Alias 사용: @/* 형태로 절대 경로 사용\n5. 서버 컴포넌트 활용: Notion API는 서버 사이드에서만 호출\n\n완료 기준:\n- Notion API 연결 테스트 성공\n- 환경 변수 정상 로드 확인\n- TypeScript 컴파일 에러 없음\n- 로컬 개발 서버 정상 실행 (npm run dev)\n- Git 커밋 완료\n\n다음 단계 (Phase 2):\n- lib/notion.ts에 API 함수 추가 (getPosts, getPostBySlug 등)\n- components/blog/에 PostCard, CategoryBadge 등 컴포넌트 추가\n- Notion 블록 렌더링 로직 구현",
+      "summary": "환경 변수 및 Notion 패키지 설정 작업이 완벽하게 완료되었습니다. @notionhq/client@5.9.0과 date-fns@4.1.0이 성공적으로 설치되었으며, .env.local 파일이 생성되고 .env.example 파일에 Notion 환경 변수가 추가되었습니다. .gitignore에 .env* 패턴이 이미 설정되어 있어 보안이 확보되었고, TypeScript 컴파일이 에러 없이 성공적으로 완료되었습니다. 모든 검증 기준을 충족하며 다음 단계(Task 2: Notion 타입 정의 및 클라이언트 초기화)를 진행할 준비가 완료되었습니다.",
+      "completedAt": "2026-02-08T07:55:02.754Z"
+    }
+  ]
+}

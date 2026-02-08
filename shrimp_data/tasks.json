@@ -1,0 +1,501 @@
+{
+  "tasks": [
+    {
+      "id": "7059242e-956a-4a48-80c9-5ad556ea515a",
+      "name": "Phase 1.1: Notion 타입 정의 및 클라이언트 초기화",
+      "description": "Notion API 사용을 위한 TypeScript 타입을 정의하고 Notion 클라이언트를 초기화합니다. types/notion.ts에 Post, NotionBlock 인터페이스를 정의하고, lib/notion.ts에 Notion 클라이언트를 설정하여 환경 변수를 검증하고 연결 테스트 함수를 구현합니다.",
+      "notes": "TypeScript strict 모드에서 작동. NotionBlock은 초기에는 유연하게 정의하고 Phase 2에서 확장. 환경 변수 검증은 모듈 최상위에 배치.",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2026-02-08T12:09:01.957Z",
+      "updatedAt": "2026-02-08T12:09:01.957Z",
+      "relatedFiles": [
+        {
+          "path": "types/notion.ts",
+          "type": "CREATE",
+          "description": "Notion 타입 정의",
+          "lineStart": 1,
+          "lineEnd": 50
+        },
+        {
+          "path": "lib/notion.ts",
+          "type": "CREATE",
+          "description": "Notion 클라이언트 초기화",
+          "lineStart": 1,
+          "lineEnd": 50
+        }
+      ],
+      "implementationGuide": "1. types/notion.ts 생성:\n   export interface Post {\n     id: string\n     title: string\n     slug: string\n     category: string\n     tags: string[]\n     publishedAt: string\n     status: 'Draft' | 'Published'\n     summary?: string\n     cover?: string\n   }\n\n   export interface NotionBlock {\n     type: string\n     id: string\n     [key: string]: any\n   }\n\n2. lib/notion.ts 생성:\n   import { Client } from '@notionhq/client'\n\n   환경 변수 검증:\n   if (!process.env.NOTION_API_KEY || !process.env.NOTION_DATABASE_ID) {\n     throw new Error('Notion 환경 변수가 설정되지 않았습니다')\n   }\n\n   export const notion = new Client({\n     auth: process.env.NOTION_API_KEY,\n   })\n\n   export const DATABASE_ID = process.env.NOTION_DATABASE_ID!\n\n   export async function testNotionConnection() {\n     try {\n       const response = await notion.databases.query({\n         database_id: DATABASE_ID,\n         page_size: 1,\n       })\n       console.log('✅ Notion API 연결 성공')\n       return true\n     } catch (error) {\n       console.error('❌ Notion API 연결 실패:', error)\n       return false\n     }\n   }",
+      "verificationCriteria": "1. types/notion.ts 파일 생성 및 Post, NotionBlock 인터페이스 정의 확인\n2. lib/notion.ts 파일 생성 및 notion, DATABASE_ID export 확인\n3. 환경 변수 검증 로직 확인\n4. TypeScript 컴파일 에러 없음\n5. ESLint 에러 없음",
+      "analysisResult": "Notion CMS 기반 개인 블로그 전체 개발 프로젝트. Phase 1-5를 순차적으로 진행 (총 11-16일). 현재는 Phase 1의 3개 작업을 정의. Phase 1 완료 기준: Notion API 연결 성공, TypeScript/ESLint 에러 0개, 로컬 서버 정상 실행."
+    },
+    {
+      "id": "cff1a704-7302-4f33-8f7e-ca2773d2d6f8",
+      "name": "Phase 1.2: 블로그 디렉토리 구조 생성",
+      "description": "블로그 기능을 위한 디렉토리 구조와 기본 파일을 생성합니다. components/blog/, app/posts/[slug]/, app/categories/[category]/ 디렉토리를 생성하고 placeholder 파일을 추가합니다.",
+      "notes": "기존 프로젝트 구조 유지. components/blog/는 Phase 2에서 채워질 예정. Next.js App Router 동적 라우팅 규칙 준수.",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2026-02-08T12:09:01.957Z",
+      "updatedAt": "2026-02-08T12:09:01.957Z",
+      "relatedFiles": [
+        {
+          "path": "components/blog/index.ts",
+          "type": "CREATE",
+          "description": "블로그 컴포넌트 디렉토리",
+          "lineStart": 1,
+          "lineEnd": 10
+        },
+        {
+          "path": "app/posts/[slug]/page.tsx",
+          "type": "CREATE",
+          "description": "글 상세 페이지 placeholder",
+          "lineStart": 1,
+          "lineEnd": 20
+        },
+        {
+          "path": "app/categories/[category]/page.tsx",
+          "type": "CREATE",
+          "description": "카테고리 페이지 placeholder",
+          "lineStart": 1,
+          "lineEnd": 20
+        }
+      ],
+      "implementationGuide": "1. components/blog/ 생성:\n   mkdir -p components/blog\n   echo \"export {}\" > components/blog/index.ts\n\n2. app/posts/[slug]/ 생성:\n   mkdir -p app/posts/[slug]\n\n   app/posts/[slug]/page.tsx:\n   export default function PostPage({ params }: { params: { slug: string } }) {\n     return <div><h1>글 상세 페이지</h1><p>Slug: {params.slug}</p></div>\n   }\n\n   app/posts/[slug]/loading.tsx:\n   export default function Loading() {\n     return <div>로딩 중...</div>\n   }\n\n3. app/categories/[category]/ 생성:\n   mkdir -p app/categories/[category]\n\n   app/categories/[category]/page.tsx:\n   export default function CategoryPage({ params }: { params: { category: string } }) {\n     return <div><h1>카테고리: {params.category}</h1></div>\n   }",
+      "verificationCriteria": "1. components/blog/ 디렉토리 존재\n2. app/posts/[slug]/page.tsx, loading.tsx 파일 생성\n3. app/categories/[category]/page.tsx 파일 생성\n4. /posts/test, /categories/test 경로 접근 가능\n5. TypeScript 컴파일 에러 없음",
+      "analysisResult": "Notion CMS 기반 개인 블로그 전체 개발 프로젝트. Phase 1-5를 순차적으로 진행 (총 11-16일). 현재는 Phase 1의 3개 작업을 정의. Phase 1 완료 기준: Notion API 연결 성공, TypeScript/ESLint 에러 0개, 로컬 서버 정상 실행."
+    },
+    {
+      "id": "1b006e38-99de-4d3d-9f63-bac2a67413a2",
+      "name": "Phase 1.3: Notion Integration 설정 및 검증",
+      "description": "Notion 웹사이트에서 Integration을 생성하고 데이터베이스를 설정합니다. testNotionConnection() 함수로 연동을 검증합니다.",
+      "notes": "외부 작업 + 코드 검증. API 키는 .env.local에 저장 (Git 제외). 테스트 데이터는 Published 2개, Draft 1개.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "7059242e-956a-4a48-80c9-5ad556ea515a"
+        }
+      ],
+      "createdAt": "2026-02-08T12:09:01.957Z",
+      "updatedAt": "2026-02-08T12:09:01.957Z",
+      "relatedFiles": [
+        {
+          "path": "lib/notion.ts",
+          "type": "REFERENCE",
+          "description": "testNotionConnection 함수 사용",
+          "lineStart": 1,
+          "lineEnd": 50
+        },
+        {
+          "path": ".env.local",
+          "type": "TO_MODIFY",
+          "description": "Notion API 키 및 DB ID 입력",
+          "lineStart": 1,
+          "lineEnd": 10
+        }
+      ],
+      "implementationGuide": "1. Notion Integration 생성 (외부 작업):\n   - https://www.notion.so/my-integrations 접속\n   - New integration 클릭\n   - Integration 이름: 개인 블로그\n   - Capabilities: Read content\n   - Internal Integration Secret 복사 → .env.local의 NOTION_API_KEY\n\n2. Notion 데이터베이스 생성:\n   - 새 페이지 생성 → Database - Full page\n   - 속성: Title, Slug(Text), Category(Select), Tags(Multi-select), Published(Date), Status(Select: Draft/Published), Summary(Text), Cover(Files)\n   - Integration 공유: ... 메뉴 → Connections → 개인 블로그\n   - 데이터베이스 ID 복사 → .env.local의 NOTION_DATABASE_ID\n\n3. 테스트 데이터 생성:\n   - Published 2개, Draft 1개\n\n4. 연결 테스트:\n   import { testNotionConnection } from '@/lib/notion'\n   const isConnected = await testNotionConnection()\n   console.log(isConnected)\n\n5. npm run dev 실행 후 콘솔 확인",
+      "verificationCriteria": "1. Notion Integration 생성 완료\n2. 데이터베이스 생성 및 속성 설정 완료\n3. Integration 권한 부여 완료\n4. .env.local에 API 키, DB ID 저장\n5. 테스트 데이터 3개 생성\n6. testNotionConnection() 성공\n7. 로컬 개발 서버 정상 실행",
+      "analysisResult": "Notion CMS 기반 개인 블로그 전체 개발 프로젝트. Phase 1-5를 순차적으로 진행 (총 11-16일). 현재는 Phase 1의 3개 작업을 정의. Phase 1 완료 기준: Notion API 연결 성공, TypeScript/ESLint 에러 0개, 로컬 서버 정상 실행."
+    },
+    {
+      "id": "cf77c932-db5c-49e7-817f-ec25b7f25f79",
+      "name": "Phase 2.1: Notion API 함수 구현",
+      "description": "Notion 데이터베이스에서 데이터를 가져오는 API 함수들을 구현합니다. lib/notion-api.ts에 getPosts, getPostBySlug, getPageContent, getCategories 함수를 구현하고 데이터 변환 로직을 추가합니다.",
+      "notes": "Status가 Published인 글만 필터링. 날짜 내림차순 정렬. 에러 처리 필수 (try-catch). Notion API Rate Limit 고려.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "1b006e38-99de-4d3d-9f63-bac2a67413a2"
+        }
+      ],
+      "createdAt": "2026-02-08T12:09:50.984Z",
+      "updatedAt": "2026-02-08T12:09:50.984Z",
+      "relatedFiles": [
+        {
+          "path": "lib/notion-api.ts",
+          "type": "CREATE",
+          "description": "Notion API 함수들",
+          "lineStart": 1,
+          "lineEnd": 100
+        },
+        {
+          "path": "lib/notion.ts",
+          "type": "REFERENCE",
+          "description": "notion 클라이언트 import",
+          "lineStart": 1,
+          "lineEnd": 50
+        },
+        {
+          "path": "types/notion.ts",
+          "type": "REFERENCE",
+          "description": "Post 타입 사용",
+          "lineStart": 1,
+          "lineEnd": 50
+        }
+      ],
+      "implementationGuide": "1. lib/notion-api.ts 생성\n\nimport { notion, DATABASE_ID } from './notion'\nimport type { Post } from '@/types/notion'\n\nexport async function getPosts(filter?: { category?: string }): Promise<Post[]> {\n  const response = await notion.databases.query({\n    database_id: DATABASE_ID,\n    filter: {\n      and: [\n        { property: 'Status', select: { equals: 'Published' } },\n        ...(filter?.category ? [{ property: 'Category', select: { equals: filter.category } }] : [])\n      ]\n    },\n    sorts: [{ property: 'Published', direction: 'descending' }]\n  })\n  return response.results.map(mapNotionPageToPost)\n}\n\nexport async function getPostBySlug(slug: string): Promise<Post | null> {\n  const response = await notion.databases.query({\n    database_id: DATABASE_ID,\n    filter: {\n      and: [\n        { property: 'Slug', rich_text: { equals: slug } },\n        { property: 'Status', select: { equals: 'Published' } }\n      ]\n    }\n  })\n  return response.results[0] ? mapNotionPageToPost(response.results[0]) : null\n}\n\nexport async function getPageContent(pageId: string) {\n  const response = await notion.blocks.children.list({ block_id: pageId })\n  return response.results\n}\n\nexport async function getCategories(): Promise<string[]> {\n  const posts = await getPosts()\n  const categories = [...new Set(posts.map(p => p.category))]\n  return categories.sort()\n}\n\nfunction mapNotionPageToPost(page: any): Post {\n  return {\n    id: page.id,\n    title: page.properties.Title.title[0]?.plain_text || '',\n    slug: page.properties.Slug.rich_text[0]?.plain_text || '',\n    category: page.properties.Category.select?.name || '',\n    tags: page.properties.Tags.multi_select.map((t: any) => t.name),\n    publishedAt: page.properties.Published.date?.start || '',\n    status: page.properties.Status.select?.name || 'Draft',\n    summary: page.properties.Summary?.rich_text[0]?.plain_text,\n    cover: page.properties.Cover?.files[0]?.file?.url\n  }\n}",
+      "verificationCriteria": "1. lib/notion-api.ts 파일 생성\n2. getPosts, getPostBySlug, getPageContent, getCategories 함수 구현\n3. mapNotionPageToPost 유틸리티 함수 구현\n4. TypeScript 컴파일 에러 없음\n5. getPosts() 호출 시 Published 글만 반환 확인",
+      "analysisResult": "Phase 2: 공통 모듈 개발 (2-3일). Notion API 함수, 캐싱 전략, 공통 UI 컴포넌트 구현. Phase 1 완료 후 진행. 재사용 가능한 데이터 레이어 및 컴포넌트 구축."
+    },
+    {
+      "id": "606b0dd5-dfcd-4ee9-b906-5206614a3ad2",
+      "name": "Phase 2.2: 캐싱 전략 설정 (ISR)",
+      "description": "Next.js Incremental Static Regeneration (ISR)을 설정하여 Notion 데이터를 캐싱합니다. API 함수들에 revalidate 옵션을 적용하고 테스트합니다.",
+      "notes": "ISR revalidate 60초 설정. Notion API Rate Limit (초당 3 요청) 고려. 서버 컴포넌트에서만 사용.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "cf77c932-db5c-49e7-817f-ec25b7f25f79"
+        }
+      ],
+      "createdAt": "2026-02-08T12:09:50.984Z",
+      "updatedAt": "2026-02-08T12:09:50.984Z",
+      "relatedFiles": [
+        {
+          "path": "lib/notion-api.ts",
+          "type": "TO_MODIFY",
+          "description": "revalidate export 추가",
+          "lineStart": 1,
+          "lineEnd": 100
+        }
+      ],
+      "implementationGuide": "1. lib/notion-api.ts에 revalidate export 추가:\n\nexport const revalidate = 60\n\n2. 각 API 함수에 캐싱 적용 (Next.js가 자동으로 처리):\n함수 자체는 수정 불필요, 호출하는 페이지에서 설정\n\n3. app/page.tsx에서 사용 예시:\n\nexport const revalidate = 60\n\nexport default async function HomePage() {\n  const posts = await getPosts()\n  return <div>{posts.map(...)}</div>\n}\n\n4. 테스트:\n- Notion에서 글 수정\n- 60초 후 블로그 확인\n- 변경사항 반영 확인",
+      "verificationCriteria": "1. lib/notion-api.ts에 export const revalidate = 60 추가\n2. Notion 데이터 변경 후 60초 이내 반영 확인\n3. 캐싱 동작 확인 (동일한 요청 시 빠른 응답)",
+      "analysisResult": "Phase 2: 공통 모듈 개발 (2-3일). Notion API 함수, 캐싱 전략, 공통 UI 컴포넌트 구현. Phase 1 완료 후 진행. 재사용 가능한 데이터 레이어 및 컴포넌트 구축."
+    },
+    {
+      "id": "b0c52232-5b79-4a8a-8516-e93aaa70373c",
+      "name": "Phase 2.3: 공통 UI 컴포넌트 개발",
+      "description": "블로그에서 사용할 공통 UI 컴포넌트들을 개발합니다. PostCard, CategoryBadge, TagList, PostHeader 컴포넌트를 components/blog/에 생성하고 shadcn/ui를 활용합니다.",
+      "notes": "shadcn/ui Card, Badge 컴포넌트 재사용. cn() 함수 활용. TypeScript Props 타입 명시.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "cf77c932-db5c-49e7-817f-ec25b7f25f79"
+        }
+      ],
+      "createdAt": "2026-02-08T12:09:50.984Z",
+      "updatedAt": "2026-02-08T12:09:50.984Z",
+      "relatedFiles": [
+        {
+          "path": "components/blog/post-card.tsx",
+          "type": "CREATE",
+          "description": "글 카드 컴포넌트",
+          "lineStart": 1,
+          "lineEnd": 50
+        },
+        {
+          "path": "components/blog/category-badge.tsx",
+          "type": "CREATE",
+          "description": "카테고리 뱃지",
+          "lineStart": 1,
+          "lineEnd": 20
+        },
+        {
+          "path": "components/blog/tag-list.tsx",
+          "type": "CREATE",
+          "description": "태그 목록",
+          "lineStart": 1,
+          "lineEnd": 30
+        },
+        {
+          "path": "components/blog/post-header.tsx",
+          "type": "CREATE",
+          "description": "글 헤더",
+          "lineStart": 1,
+          "lineEnd": 30
+        }
+      ],
+      "implementationGuide": "1. components/blog/post-card.tsx:\n\nimport { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'\nimport { CategoryBadge } from './category-badge'\nimport { TagList } from './tag-list'\nimport Link from 'next/link'\nimport type { Post } from '@/types/notion'\n\ninterface PostCardProps {\n  post: Post\n}\n\nexport function PostCard({ post }: PostCardProps) {\n  return (\n    <Link href={`/posts/${post.slug}`}>\n      <Card className=\"hover:shadow-lg transition-shadow\">\n        <CardHeader>\n          <CardTitle>{post.title}</CardTitle>\n          <CardDescription>{post.publishedAt}</CardDescription>\n        </CardHeader>\n        <CardContent>\n          <p>{post.summary}</p>\n          <CategoryBadge category={post.category} />\n          <TagList tags={post.tags} />\n        </CardContent>\n      </Card>\n    </Link>\n  )\n}\n\n2. components/blog/category-badge.tsx:\n\nimport { Badge } from '@/components/ui/badge'\n\nexport function CategoryBadge({ category }: { category: string }) {\n  return <Badge variant=\"outline\">{category}</Badge>\n}\n\n3. components/blog/tag-list.tsx:\n\nimport { Badge } from '@/components/ui/badge'\n\nexport function TagList({ tags }: { tags: string[] }) {\n  const displayTags = tags.slice(0, 3)\n  const remaining = tags.length - 3\n  return (\n    <div className=\"flex gap-2\">\n      {displayTags.map(tag => <Badge key={tag}>{tag}</Badge>)}\n      {remaining > 0 && <Badge>+{remaining}</Badge>}\n    </div>\n  )\n}\n\n4. components/blog/post-header.tsx:\n\nexport function PostHeader({ post }: { post: Post }) {\n  return (\n    <header>\n      <h1>{post.title}</h1>\n      <p>{post.publishedAt}</p>\n      <CategoryBadge category={post.category} />\n      <TagList tags={post.tags} />\n    </header>\n  )\n}",
+      "verificationCriteria": "1. 4개 컴포넌트 파일 생성\n2. shadcn/ui Card, Badge 재사용 확인\n3. TypeScript Props 타입 정의 확인\n4. 개별 페이지에서 시각적 확인\n5. ESLint, TypeScript 에러 없음",
+      "analysisResult": "Phase 2: 공통 모듈 개발 (2-3일). Notion API 함수, 캐싱 전략, 공통 UI 컴포넌트 구현. Phase 1 완료 후 진행. 재사용 가능한 데이터 레이어 및 컴포넌트 구축."
+    },
+    {
+      "id": "ad369b2d-7f07-4d99-898d-5e5bfdd35e54",
+      "name": "Phase 3.1: 글 목록 페이지 구현",
+      "description": "홈 페이지에 글 목록을 표시합니다. app/page.tsx를 구현하여 Notion에서 가져온 글들을 반응형 그리드 레이아웃으로 표시하고 로딩 상태를 추가합니다.",
+      "notes": "반응형 그리드: 모바일 1열, 태블릿 2열, 데스크톱 3열. 빈 상태 처리. ISR 60초 설정.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "b0c52232-5b79-4a8a-8516-e93aaa70373c"
+        }
+      ],
+      "createdAt": "2026-02-08T12:10:41.180Z",
+      "updatedAt": "2026-02-08T12:10:41.180Z",
+      "relatedFiles": [
+        {
+          "path": "app/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "글 목록 표시",
+          "lineStart": 1,
+          "lineEnd": 50
+        },
+        {
+          "path": "app/loading.tsx",
+          "type": "CREATE",
+          "description": "로딩 스켈레톤 UI",
+          "lineStart": 1,
+          "lineEnd": 30
+        }
+      ],
+      "implementationGuide": "1. app/page.tsx 구현:\n\nimport { getPosts } from '@/lib/notion-api'\nimport { PostCard } from '@/components/blog/post-card'\n\nexport const revalidate = 60\n\nexport default async function HomePage() {\n  const posts = await getPosts()\n\n  if (posts.length === 0) {\n    return <div className=\"text-center py-12\">아직 작성된 글이 없습니다</div>\n  }\n\n  return (\n    <main className=\"container mx-auto px-4 py-8\">\n      <h1 className=\"text-4xl font-bold mb-8\">최근 글</h1>\n      <div className=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6\">\n        {posts.map(post => (\n          <PostCard key={post.id} post={post} />\n        ))}\n      </div>\n    </main>\n  )\n}\n\n2. app/loading.tsx 생성:\n\nimport { Skeleton } from '@/components/ui/skeleton'\n\nexport default function Loading() {\n  return (\n    <div className=\"container mx-auto px-4 py-8\">\n      <Skeleton className=\"h-12 w-48 mb-8\" />\n      <div className=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6\">\n        {[1, 2, 3, 4, 5, 6].map(i => (\n          <Skeleton key={i} className=\"h-64 w-full\" />\n        ))}\n      </div>\n    </div>\n  )\n}\n\n3. shadcn/ui Skeleton 컴포넌트 추가:\nnpx shadcn@latest add skeleton",
+      "verificationCriteria": "1. app/page.tsx에서 Published 글 목록 정상 표시\n2. 반응형 그리드 동작 확인 (모바일/태블릿/데스크톱)\n3. 빈 상태 메시지 표시 확인\n4. 로딩 스켈레톤 UI 동작 확인\n5. TypeScript 컴파일 에러 없음",
+      "analysisResult": "Phase 3: 핵심 기능 개발 (3-4일). 글 목록 페이지, 글 상세 페이지, Notion 렌더러 구현. Phase 2 완료 후 진행. 블로그의 가장 기본이 되는 기능 구현."
+    },
+    {
+      "id": "16ac3486-3d27-49b0-87f5-096efabe959b",
+      "name": "Phase 3.2: 글 상세 페이지 구현",
+      "description": "개별 글의 상세 내용을 표시하는 페이지를 구현합니다. app/posts/[slug]/page.tsx에 동적 라우팅, 정적 경로 생성, 404 처리를 추가합니다.",
+      "notes": "generateStaticParams로 빌드 타임 정적 생성. notFound() 호출로 404 처리. Notion 렌더러는 Phase 3.3에서 추가.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "b0c52232-5b79-4a8a-8516-e93aaa70373c"
+        }
+      ],
+      "createdAt": "2026-02-08T12:10:41.180Z",
+      "updatedAt": "2026-02-08T12:10:41.180Z",
+      "relatedFiles": [
+        {
+          "path": "app/posts/[slug]/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "글 상세 페이지",
+          "lineStart": 1,
+          "lineEnd": 100
+        },
+        {
+          "path": "app/posts/[slug]/not-found.tsx",
+          "type": "CREATE",
+          "description": "404 페이지",
+          "lineStart": 1,
+          "lineEnd": 30
+        }
+      ],
+      "implementationGuide": "1. app/posts/[slug]/page.tsx 구현:\n\nimport { getPostBySlug, getPageContent, getPosts } from '@/lib/notion-api'\nimport { PostHeader } from '@/components/blog/post-header'\nimport { notFound } from 'next/navigation'\n\nexport const revalidate = 60\n\nexport async function generateStaticParams() {\n  const posts = await getPosts()\n  return posts.map(post => ({ slug: post.slug }))\n}\n\nexport default async function PostPage({ params }: { params: { slug: string } }) {\n  const post = await getPostBySlug(params.slug)\n\n  if (!post) {\n    notFound()\n  }\n\n  const blocks = await getPageContent(post.id)\n\n  return (\n    <article className=\"container max-w-4xl mx-auto px-4 py-8\">\n      <PostHeader post={post} />\n      <div className=\"prose dark:prose-invert max-w-none mt-8\">\n        {/* Notion 렌더러는 Phase 3.3에서 구현 */}\n        <pre>{JSON.stringify(blocks, null, 2)}</pre>\n      </div>\n    </article>\n  )\n}\n\n2. app/posts/[slug]/not-found.tsx:\n\nimport Link from 'next/link'\nimport { Button } from '@/components/ui/button'\n\nexport default function NotFound() {\n  return (\n    <div className=\"container mx-auto px-4 py-16 text-center\">\n      <h1 className=\"text-4xl font-bold mb-4\">404 - 페이지를 찾을 수 없습니다</h1>\n      <p className=\"mb-8\">요청하신 글이 존재하지 않습니다.</p>\n      <Link href=\"/\">\n        <Button>홈으로 돌아가기</Button>\n      </Link>\n    </div>\n  )\n}\n\n3. app/posts/[slug]/loading.tsx 업데이트",
+      "verificationCriteria": "1. 글 상세 페이지 정상 표시\n2. generateStaticParams 동작 확인 (빌드 시 정적 생성)\n3. 존재하지 않는 slug 접근 시 404 페이지 표시\n4. PostHeader 정상 렌더링\n5. TypeScript 컴파일 에러 없음",
+      "analysisResult": "Phase 3: 핵심 기능 개발 (3-4일). 글 목록 페이지, 글 상세 페이지, Notion 렌더러 구현. Phase 2 완료 후 진행. 블로그의 가장 기본이 되는 기능 구현."
+    },
+    {
+      "id": "81ea2623-cac7-4097-8783-f4c14a6f67dc",
+      "name": "Phase 3.3: Notion 컨텐츠 렌더러 구현",
+      "description": "Notion 블록을 HTML로 렌더링하는 NotionRenderer 컴포넌트를 구현합니다. 텍스트, 코드, 이미지 등 다양한 블록 타입을 지원합니다.",
+      "notes": "단계적으로 블록 타입 지원. Syntax highlighting은 추후 추가 가능. Notion 이미지 URL 만료 (1시간) 고려.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "16ac3486-3d27-49b0-87f5-096efabe959b"
+        }
+      ],
+      "createdAt": "2026-02-08T12:10:41.180Z",
+      "updatedAt": "2026-02-08T12:10:41.180Z",
+      "relatedFiles": [
+        {
+          "path": "components/blog/notion-renderer.tsx",
+          "type": "CREATE",
+          "description": "Notion 렌더러",
+          "lineStart": 1,
+          "lineEnd": 150
+        }
+      ],
+      "implementationGuide": "1. components/blog/notion-renderer.tsx 생성:\n\nimport Image from 'next/image'\nimport type { NotionBlock } from '@/types/notion'\n\ninterface NotionRendererProps {\n  blocks: any[]\n}\n\nexport function NotionRenderer({ blocks }: NotionRendererProps) {\n  return (\n    <div className=\"prose dark:prose-invert max-w-none\">\n      {blocks.map(block => renderBlock(block))}\n    </div>\n  )\n}\n\nfunction renderBlock(block: any) {\n  const { type, id } = block\n\n  switch (type) {\n    case 'paragraph':\n      return <p key={id}>{block.paragraph.rich_text[0]?.plain_text}</p>\n\n    case 'heading_1':\n      return <h1 key={id}>{block.heading_1.rich_text[0]?.plain_text}</h1>\n\n    case 'heading_2':\n      return <h2 key={id}>{block.heading_2.rich_text[0]?.plain_text}</h2>\n\n    case 'heading_3':\n      return <h3 key={id}>{block.heading_3.rich_text[0]?.plain_text}</h3>\n\n    case 'bulleted_list_item':\n      return <li key={id}>{block.bulleted_list_item.rich_text[0]?.plain_text}</li>\n\n    case 'numbered_list_item':\n      return <li key={id}>{block.numbered_list_item.rich_text[0]?.plain_text}</li>\n\n    case 'quote':\n      return <blockquote key={id}>{block.quote.rich_text[0]?.plain_text}</blockquote>\n\n    case 'code':\n      return (\n        <pre key={id} className=\"bg-gray-100 dark:bg-gray-800 p-4 rounded\">\n          <code>{block.code.rich_text[0]?.plain_text}</code>\n        </pre>\n      )\n\n    case 'image':\n      const imageUrl = block.image.file?.url || block.image.external?.url\n      return imageUrl ? (\n        <Image key={id} src={imageUrl} alt=\"\" width={800} height={400} />\n      ) : null\n\n    case 'divider':\n      return <hr key={id} />\n\n    default:\n      return <p key={id} className=\"text-gray-400\">지원되지 않는 블록: {type}</p>\n  }\n}\n\n2. app/posts/[slug]/page.tsx에서 사용:\nimport { NotionRenderer } from '@/components/blog/notion-renderer'\n<NotionRenderer blocks={blocks} />\n\n3. Tailwind Typography 플러그인 설치:\nnpm install @tailwindcss/typography",
+      "verificationCriteria": "1. NotionRenderer 컴포넌트 생성\n2. 주요 블록 타입 렌더링 확인 (paragraph, heading, list, code, image)\n3. app/posts/[slug]/page.tsx에서 NotionRenderer 사용\n4. 실제 Notion 글이 정상 렌더링되는지 확인\n5. TypeScript 컴파일 에러 없음",
+      "analysisResult": "Phase 3: 핵심 기능 개발 (3-4일). 글 목록 페이지, 글 상세 페이지, Notion 렌더러 구현. Phase 2 완료 후 진행. 블로그의 가장 기본이 되는 기능 구현."
+    },
+    {
+      "id": "482f0f6f-b354-4324-949f-6f32dca9d869",
+      "name": "Phase 4.1: 카테고리 필터링 및 네비게이션",
+      "description": "카테고리별로 글을 필터링하는 페이지를 구현하고, Header에 카테고리 네비게이션을 추가합니다.",
+      "notes": "generateStaticParams로 모든 카테고리 정적 생성. 빈 카테고리 처리. URL-safe 처리 필요 시 encodeURIComponent 사용.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "ad369b2d-7f07-4d99-898d-5e5bfdd35e54"
+        }
+      ],
+      "createdAt": "2026-02-08T12:11:26.906Z",
+      "updatedAt": "2026-02-08T12:11:26.906Z",
+      "relatedFiles": [
+        {
+          "path": "app/categories/[category]/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "카테고리 페이지",
+          "lineStart": 1,
+          "lineEnd": 50
+        },
+        {
+          "path": "components/layout/category-nav.tsx",
+          "type": "CREATE",
+          "description": "카테고리 네비게이션",
+          "lineStart": 1,
+          "lineEnd": 30
+        }
+      ],
+      "implementationGuide": "1. app/categories/[category]/page.tsx 구현:\n\nimport { getPosts, getCategories } from '@/lib/notion-api'\nimport { PostCard } from '@/components/blog/post-card'\n\nexport const revalidate = 60\n\nexport async function generateStaticParams() {\n  const categories = await getCategories()\n  return categories.map(category => ({ category }))\n}\n\nexport default async function CategoryPage({ params }: { params: { category: string } }) {\n  const posts = await getPosts({ category: params.category })\n\n  return (\n    <main className=\"container mx-auto px-4 py-8\">\n      <h1 className=\"text-4xl font-bold mb-2\">{params.category}</h1>\n      <p className=\"text-gray-600 mb-8\">{posts.length}개의 글</p>\n      {posts.length === 0 ? (\n        <p>해당 카테고리에 글이 없습니다.</p>\n      ) : (\n        <div className=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6\">\n          {posts.map(post => <PostCard key={post.id} post={post} />)}\n        </div>\n      )}\n    </main>\n  )\n}\n\n2. components/layout/category-nav.tsx:\n\nimport Link from 'next/link'\nimport { getCategories } from '@/lib/notion-api'\n\nexport async function CategoryNav() {\n  const categories = await getCategories()\n\n  return (\n    <nav className=\"flex gap-4\">\n      <Link href=\"/\">홈</Link>\n      {categories.map(cat => (\n        <Link key={cat} href={`/categories/${cat}`}>{cat}</Link>\n      ))}\n    </nav>\n  )\n}\n\n3. components/layout/header.tsx에 CategoryNav 추가",
+      "verificationCriteria": "1. 카테고리 페이지에서 필터링된 글 목록 정상 표시\n2. generateStaticParams 동작 확인\n3. Header에 카테고리 네비게이션 표시\n4. 빈 카테고리 메시지 확인\n5. TypeScript 컴파일 에러 없음",
+      "analysisResult": "Phase 4: 추가 기능 개발 (2-3일). 카테고리 필터링, 검색, SEO, 레이아웃 개선. Phase 3 완료 후 진행. 사용자 경험 향상 및 콘텐츠 탐색 기능 추가."
+    },
+    {
+      "id": "1954e5ec-e010-4d5f-9b42-47a6cfe274cb",
+      "name": "Phase 4.2: 검색 기능 및 SEO 최적화",
+      "description": "검색 기능을 추가하고 SEO를 위한 메타데이터를 생성합니다.",
+      "notes": "검색은 클라이언트 사이드 필터링 (초기 버전). SEO 메타데이터는 서버 컴포넌트에서만 생성 가능.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "ad369b2d-7f07-4d99-898d-5e5bfdd35e54"
+        },
+        {
+          "taskId": "16ac3486-3d27-49b0-87f5-096efabe959b"
+        }
+      ],
+      "createdAt": "2026-02-08T12:11:26.906Z",
+      "updatedAt": "2026-02-08T12:11:26.906Z",
+      "relatedFiles": [
+        {
+          "path": "components/common/search-bar.tsx",
+          "type": "CREATE",
+          "description": "검색 바",
+          "lineStart": 1,
+          "lineEnd": 40
+        },
+        {
+          "path": "app/posts/[slug]/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "generateMetadata 추가",
+          "lineStart": 1,
+          "lineEnd": 100
+        }
+      ],
+      "implementationGuide": "1. components/common/search-bar.tsx (클라이언트 컴포넌트):\n\n'use client'\n\nimport { useState } from 'react'\nimport { useRouter } from 'next/navigation'\nimport { Input } from '@/components/ui/input'\n\nexport function SearchBar() {\n  const [query, setQuery] = useState('')\n  const router = useRouter()\n\n  const handleSearch = (e: React.FormEvent) => {\n    e.preventDefault()\n    if (query.trim()) {\n      router.push(`/?search=${encodeURIComponent(query)}`)\n    }\n  }\n\n  return (\n    <form onSubmit={handleSearch}>\n      <Input\n        placeholder=\"검색...\"\n        value={query}\n        onChange={(e) => setQuery(e.target.value)}\n      />\n    </form>\n  )\n}\n\n2. app/page.tsx에 검색 로직 추가:\n\nexport default async function HomePage({ searchParams }: { searchParams: { search?: string } }) {\n  const posts = await getPosts()\n  const filteredPosts = searchParams.search\n    ? posts.filter(p => p.title.toLowerCase().includes(searchParams.search.toLowerCase()))\n    : posts\n  ...\n}\n\n3. SEO 메타데이터 - app/posts/[slug]/page.tsx:\n\nexport async function generateMetadata({ params }: { params: { slug: string } }) {\n  const post = await getPostBySlug(params.slug)\n  if (!post) return { title: '404' }\n\n  return {\n    title: post.title,\n    description: post.summary,\n    openGraph: {\n      title: post.title,\n      description: post.summary,\n      images: post.cover ? [post.cover] : [],\n      type: 'article',\n      publishedTime: post.publishedAt,\n    },\n  }\n}",
+      "verificationCriteria": "1. 검색 기능 정상 작동\n2. 검색어 입력 시 필터링 확인\n3. generateMetadata 구현 확인\n4. Open Graph 메타데이터 확인\n5. TypeScript 컴파일 에러 없음",
+      "analysisResult": "Phase 4: 추가 기능 개발 (2-3일). 카테고리 필터링, 검색, SEO, 레이아웃 개선. Phase 3 완료 후 진행. 사용자 경험 향상 및 콘텐츠 탐색 기능 추가."
+    },
+    {
+      "id": "9758687e-ccb9-4c38-925b-b9c48529365f",
+      "name": "Phase 4.3: 레이아웃 개선 및 모바일 네비게이션",
+      "description": "Header, Footer를 완성하고 모바일 네비게이션을 추가합니다.",
+      "notes": "모바일 네비게이션은 Sheet 컴포넌트 활용. 다크모드 토글은 이미 존재.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "482f0f6f-b354-4324-949f-6f32dca9d869"
+        }
+      ],
+      "createdAt": "2026-02-08T12:11:26.906Z",
+      "updatedAt": "2026-02-08T12:11:26.906Z",
+      "relatedFiles": [
+        {
+          "path": "components/layout/header.tsx",
+          "type": "TO_MODIFY",
+          "description": "Header 완성",
+          "lineStart": 1,
+          "lineEnd": 50
+        },
+        {
+          "path": "components/layout/mobile-nav.tsx",
+          "type": "CREATE",
+          "description": "모바일 네비게이션",
+          "lineStart": 1,
+          "lineEnd": 40
+        },
+        {
+          "path": "components/layout/footer.tsx",
+          "type": "TO_MODIFY",
+          "description": "Footer 완성",
+          "lineStart": 1,
+          "lineEnd": 30
+        }
+      ],
+      "implementationGuide": "1. components/layout/header.tsx 완성:\n\nimport Link from 'next/link'\nimport { CategoryNav } from './category-nav'\nimport { SearchBar } from '@/components/common/search-bar'\nimport { ThemeToggle } from '@/components/common/theme-toggle'\nimport { MobileNav } from './mobile-nav'\n\nexport function Header() {\n  return (\n    <header className=\"border-b\">\n      <div className=\"container mx-auto px-4 py-4 flex items-center justify-between\">\n        <Link href=\"/\" className=\"text-2xl font-bold\">내 블로그</Link>\n        <div className=\"hidden md:flex items-center gap-6\">\n          <CategoryNav />\n          <SearchBar />\n          <ThemeToggle />\n        </div>\n        <MobileNav />\n      </div>\n    </header>\n  )\n}\n\n2. components/layout/mobile-nav.tsx (Sheet 사용):\n\n'use client'\n\nimport { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'\nimport { Menu } from 'lucide-react'\n\nexport function MobileNav() {\n  return (\n    <Sheet>\n      <SheetTrigger className=\"md:hidden\">\n        <Menu />\n      </SheetTrigger>\n      <SheetContent>\n        {/* 네비게이션 메뉴 */}\n      </SheetContent>\n    </Sheet>\n  )\n}\n\n3. components/layout/footer.tsx 완성:\n\nexport function Footer() {\n  return (\n    <footer className=\"border-t mt-auto\">\n      <div className=\"container mx-auto px-4 py-6 text-center text-sm text-gray-600\">\n        © 2026 내 블로그. All rights reserved.\n      </div>\n    </footer>\n  )\n}\n\n4. shadcn/ui Input 추가:\nnpx shadcn@latest add input",
+      "verificationCriteria": "1. Header에 로고, 네비게이션, 검색, 다크모드 토글 표시\n2. 모바일에서 햄버거 메뉴 정상 작동\n3. Footer 정상 표시\n4. 모든 화면 크기에서 레이아웃 확인\n5. TypeScript 컴파일 에러 없음",
+      "analysisResult": "Phase 4: 추가 기능 개발 (2-3일). 카테고리 필터링, 검색, SEO, 레이아웃 개선. Phase 3 완료 후 진행. 사용자 경험 향상 및 콘텐츠 탐색 기능 추가."
+    },
+    {
+      "id": "aa35acda-7fea-4f47-8d5c-41fba80ea054",
+      "name": "Phase 5.1: 성능 최적화 및 Lighthouse 검사",
+      "description": "이미지, 폰트, 번들 크기를 최적화하고 Lighthouse로 성능을 검사합니다.",
+      "notes": "next/image, next/font는 이미 사용 중일 가능성 높음. 최적화 확인 및 개선.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "9758687e-ccb9-4c38-925b-b9c48529365f"
+        }
+      ],
+      "createdAt": "2026-02-08T12:12:11.524Z",
+      "updatedAt": "2026-02-08T12:12:11.524Z",
+      "relatedFiles": [
+        {
+          "path": "app/layout.tsx",
+          "type": "REFERENCE",
+          "description": "폰트 최적화 확인",
+          "lineStart": 1,
+          "lineEnd": 50
+        }
+      ],
+      "implementationGuide": "1. 이미지 최적화 확인:\n- 모든 이미지에 next/image 사용 확인\n- sizes 속성 적절히 설정\n\n2. 폰트 최적화 (app/layout.tsx):\nimport { Geist, Geist_Mono } from 'next/font/google'\n\nconst geistSans = Geist({\n  variable: '--font-geist-sans',\n  subsets: ['latin'],\n})\n\n3. 번들 크기 확인:\nnpm run build\n# 번들 분석기 설치 (옵션)\nnpm install @next/bundle-analyzer\n\n4. Lighthouse 검사:\n- Chrome DevTools → Lighthouse\n- 목표: Performance 90+, Accessibility 95+, Best Practices 90+, SEO 100\n\n5. Core Web Vitals 확인:\n- LCP < 2.5초\n- FID < 100ms\n- CLS < 0.1",
+      "verificationCriteria": "1. 모든 이미지 next/image 사용 확인\n2. 폰트 최적화 적용 확인\n3. npm run build 성공\n4. Lighthouse 점수: Performance 90+, Accessibility 95+, Best Practices 90+, SEO 100\n5. Core Web Vitals 목표 달성",
+      "analysisResult": "Phase 5: 최적화 및 배포 (1-2일). 성능 최적화, 에러 처리, 테스트, Vercel 배포, 문서화. Phase 4 완료 후 진행. 프로덕션 배포 준비 및 최종 검증."
+    },
+    {
+      "id": "8c452a45-cfa7-4bf8-82b1-dd8ca242cf93",
+      "name": "Phase 5.2: 에러 처리 및 테스트",
+      "description": "에러 바운더리를 구현하고 전체 기능을 테스트합니다.",
+      "notes": "에러 바운더리는 클라이언트 컴포넌트. 모든 기능 테스트 수행.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "aa35acda-7fea-4f47-8d5c-41fba80ea054"
+        }
+      ],
+      "createdAt": "2026-02-08T12:12:11.524Z",
+      "updatedAt": "2026-02-08T12:12:11.524Z",
+      "relatedFiles": [
+        {
+          "path": "app/error.tsx",
+          "type": "CREATE",
+          "description": "전역 에러 처리",
+          "lineStart": 1,
+          "lineEnd": 40
+        },
+        {
+          "path": "app/not-found.tsx",
+          "type": "TO_MODIFY",
+          "description": "404 페이지 개선",
+          "lineStart": 1,
+          "lineEnd": 30
+        }
+      ],
+      "implementationGuide": "1. app/error.tsx (전역 에러 처리):\n\n'use client'\n\nimport { useEffect } from 'react'\nimport { Button } from '@/components/ui/button'\n\nexport default function Error({\n  error,\n  reset,\n}: {\n  error: Error & { digest?: string }\n  reset: () => void\n}) {\n  useEffect(() => {\n    console.error(error)\n  }, [error])\n\n  return (\n    <div className=\"container mx-auto px-4 py-16 text-center\">\n      <h2 className=\"text-2xl font-bold mb-4\">오류가 발생했습니다</h2>\n      <Button onClick={() => reset()}>다시 시도</Button>\n    </div>\n  )\n}\n\n2. app/not-found.tsx 개선\n\n3. 기능 테스트:\n- 글 목록 페이지 로딩\n- 글 상세 페이지 로딩\n- 카테고리 필터링\n- 검색 기능\n- 다크모드 토글\n\n4. 데이터 동기화 테스트:\n- Notion에서 글 작성 → 60초 후 블로그 확인\n- Status 변경 (Draft → Published)\n- 글 수정 반영\n\n5. 에러 케이스 테스트:\n- 존재하지 않는 slug 접근\n- 빈 데이터베이스\n- 네트워크 에러 시뮬레이션",
+      "verificationCriteria": "1. app/error.tsx 구현\n2. 모든 기능 테스트 통과\n3. Notion 데이터 동기화 확인 (60초 이내)\n4. 에러 케이스 정상 처리\n5. TypeScript 컴파일 에러 없음",
+      "analysisResult": "Phase 5: 최적화 및 배포 (1-2일). 성능 최적화, 에러 처리, 테스트, Vercel 배포, 문서화. Phase 4 완료 후 진행. 프로덕션 배포 준비 및 최종 검증."
+    },
+    {
+      "id": "4bc70c05-8bf5-45b8-b891-02fdfeaa9248",
+      "name": "Phase 5.3: Vercel 배포 및 문서화",
+      "description": "프로젝트를 Vercel에 배포하고 README.md를 작성합니다.",
+      "notes": "Vercel 무료 플랜 제한 확인. README는 한국어로 작성. Git 태그로 버전 관리.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "8c452a45-cfa7-4bf8-82b1-dd8ca242cf93"
+        }
+      ],
+      "createdAt": "2026-02-08T12:12:11.524Z",
+      "updatedAt": "2026-02-08T12:12:11.524Z",
+      "relatedFiles": [
+        {
+          "path": "README.md",
+          "type": "TO_MODIFY",
+          "description": "프로젝트 문서",
+          "lineStart": 1,
+          "lineEnd": 100
+        }
+      ],
+      "implementationGuide": "1. Vercel 배포:\n- https://vercel.com 접속\n- GitHub 저장소 연결\n- Framework Preset: Next.js\n- Build Command: npm run build\n- Output Directory: .next\n\n2. 환경 변수 설정 (Vercel 대시보드):\nNOTION_API_KEY=secret_xxxxx\nNOTION_DATABASE_ID=xxxxx\n\n3. 배포 및 검증:\n- 프로덕션 URL 접속\n- 모든 페이지 정상 작동 확인\n- HTTPS 적용 확인\n- ISR 동작 확인\n\n4. README.md 작성:\n\n# Notion CMS 블로그\n\n## 프로젝트 소개\nNotion을 CMS로 사용하는 개인 개발 블로그\n\n## 기술 스택\n- Next.js 16.1.6\n- React 19.2.3\n- TypeScript\n- Tailwind CSS\n- shadcn/ui\n\n## 설치 및 실행\n```bash\nnpm install\nnpm run dev\n```\n\n## 환경 변수 설정\n`.env.local` 파일 생성:\n```\nNOTION_API_KEY=your_api_key\nNOTION_DATABASE_ID=your_database_id\n```\n\n## Notion 데이터베이스 구조\n- Title (title)\n- Slug (rich_text)\n- Category (select)\n- Tags (multi_select)\n- Published (date)\n- Status (select: Draft/Published)\n- Summary (rich_text)\n- Cover (files)\n\n## 배포\nVercel에 배포됨\n\n5. Git 커밋 및 태그:\ngit add .\ngit commit -m \"feat: Phase 5 완료 - 최적화 및 배포\"\ngit tag v1.0.0\ngit push origin main --tags",
+      "verificationCriteria": "1. Vercel 프로덕션 배포 성공\n2. 배포 URL 정상 접속\n3. 모든 페이지 로딩 확인\n4. 환경 변수 정상 작동\n5. README.md 완성\n6. Git 태그 v1.0.0 생성",
+      "analysisResult": "Phase 5: 최적화 및 배포 (1-2일). 성능 최적화, 에러 처리, 테스트, Vercel 배포, 문서화. Phase 4 완료 후 진행. 프로덕션 배포 준비 및 최종 검증."
+    }
+  ]
+}
