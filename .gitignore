@@ -43,3 +43,30 @@ next-env.d.ts
 
 # claude code
 .claude/hooks/.env
+.claude/settings.local.json
+
+# cursor (개인 설정 제외, rules만 포함)
+.cursor/commands/
+.cursor/mcp.json
+
+# Logs
+logs
+*.log
+dev-debug.log
+# Dependency directories
+node_modules/
+# Environment variables
+.env
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+# OS specific
+
+# Task files
+# tasks.json
+# tasks/ 
