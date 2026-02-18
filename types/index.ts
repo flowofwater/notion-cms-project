@@ -25,3 +25,25 @@ export interface FooterLinkGroup {
   title: string
   links: NavLink[]
 }
+
+/**
+ * Notion CMS 관련 타입
+ */
+export type {
+  Post,
+  NotionBlock,
+  NotionBlockType,
+  NotionRichText,
+  NotionBlockBase,
+  ParagraphBlock,
+  HeadingBlock,
+  ListBlock,
+  QuoteBlock,
+  CodeBlock,
+  ImageBlock,
+  CalloutBlock,
+  DividerBlock,
+  NotionPageContent,
+  NotionDatabaseFilter,
+  PaginationOptions,
+} from './notion'
