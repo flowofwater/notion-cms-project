@@ -27,7 +27,6 @@ export const getPosts = cache(async function getPosts(
     const response = await notion.dataSources.query({
       data_source_id: DATABASE_ID,
       page_size: 100,
-      // TODO: 필터 및 정렬 추가
     })
 
     const posts = response.results
@@ -85,7 +84,7 @@ export const getPostBySlug = cache(async function getPostBySlug(
   try {
     const response = await notion.dataSources.query({
       data_source_id: DATABASE_ID,
-      page_size: 1,
+      page_size: 100,
     })
 
     const page = response.results.find((p: any) => {
@@ -261,3 +260,27 @@ export function formatDate(
 ): string {
   return format(new Date(dateString), formatString)
 }
+
+/**
+ * Notion 페이지의 블록 콘텐츠 가져오기
+ *
+ * React cache()로 감싸서 동일한 페이지 ID 요청은 중복 호출하지 않음
+ *
+ * @param pageId - Notion 페이지 ID
+ * @returns NotionBlock 배열
+ */
+export const getPageContent = cache(async function getPageContent(
+  pageId: string
+): Promise<any[]> {
+  try {
+    const response = await notion.blocks.children.list({
+      block_id: pageId,
+      page_size: 100,
+    })
+
+    return response.results as any[]
+  } catch (error) {
+    console.error(`getPageContent('${pageId}') 오류:`, error)
+    return []
+  }
+})
