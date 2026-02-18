@@ -119,6 +119,10 @@
   * {
     @apply border-border outline-ring/50;
   }
+  /* 스크롤바 항상 표시 - CLS(Cumulative Layout Shift) 방지 */
+  html {
+    overflow-y: scroll;
+  }
   body {
     @apply bg-background text-foreground;
   }

@@ -4,6 +4,7 @@
  */
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { CategoryBadge } from './category-badge'
 import { TagList } from './tag-list'
@@ -20,11 +21,13 @@ export function PostCard({ post }: PostCardProps) {
     <Link href={`/posts/${post.slug}`} className="block h-full">
       <Card className="h-full transition-all hover:shadow-lg hover:scale-[1.02]">
         {post.cover && (
-          <div className="aspect-video w-full overflow-hidden rounded-t-lg">
-            <img
+          <div className="relative aspect-video w-full overflow-hidden rounded-t-lg">
+            <Image
               src={post.cover}
               alt={post.title}
-              className="h-full w-full object-cover"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           </div>
         )}
@@ -40,9 +43,10 @@ export function PostCard({ post }: PostCardProps) {
             </time>
           </div>
 
-          <h3 className="line-clamp-2 text-xl font-bold leading-tight">
+          {/* h2로 변경: h1(페이지 제목) 다음 단계 헤딩 */}
+          <h2 className="line-clamp-2 text-xl font-bold leading-tight">
             {post.title}
-          </h3>
+          </h2>
         </CardHeader>
 
         {post.summary && (
