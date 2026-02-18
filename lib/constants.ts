@@ -2,8 +2,8 @@
  * 사이트 설정 상수
  */
 export const siteConfig = {
-  name: "스타터킷",
-  description: "Next.js + shadcn/ui + Tailwind CSS로 구축된 모던 웹 스타터킷",
+  name: "개발 블로그",
+  description: "Notion으로 작성하는 개발 이야기",
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://example.com",
   ogImage: `${process.env.NEXT_PUBLIC_SITE_URL || "https://example.com"}/og.jpg`,
   links: {
@@ -17,7 +17,7 @@ export const siteConfig = {
  */
 export const navLinks = [
   { href: "/", label: "홈" },
-  { href: "/about", label: "소개" },
+  { href: "/categories", label: "카테고리" },
 ] as const
 
 /**

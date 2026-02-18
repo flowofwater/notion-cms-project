@@ -49,13 +49,6 @@ export function MobileNav() {
             </NavLink>
           ))}
         </nav>
-        <div className="mt-8">
-          <Button asChild className="w-full">
-            <Link href="/about" onClick={() => setOpen(false)}>
-              시작하기
-            </Link>
-          </Button>
-        </div>
       </SheetContent>
     </Sheet>
   )

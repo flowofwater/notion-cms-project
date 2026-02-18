@@ -3,7 +3,7 @@ import { Logo } from "@/components/common/logo"
 import { NavLink } from "@/components/common/nav-link"
 import { ThemeToggle } from "@/components/common/theme-toggle"
 import { MobileNav } from "@/components/layout/mobile-nav"
-import { Button } from "@/components/ui/button"
+import { HeaderSearch } from "@/components/common/header-search"
 import { navLinks } from "@/lib/constants"
 
 /**
@@ -29,10 +29,9 @@ export function Header() {
 
         {/* 액션 버튼 영역 */}
         <div className="flex items-center gap-2">
+          {/* 검색 버튼 */}
+          <HeaderSearch />
           <ThemeToggle />
-          <Button variant="default" size="sm" className="hidden sm:flex" asChild>
-            <Link href="/about">시작하기</Link>
-          </Button>
           {/* 모바일 메뉴 */}
           <MobileNav />
         </div>
