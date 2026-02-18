@@ -9,7 +9,7 @@
 			"env": {}
 		},
 		"context7": {
-			"type": "stdio",
+			"type": "http",
 			"url": "https://mcp.context7.com/mcp"
 		},
 		"sequential-thinking": {

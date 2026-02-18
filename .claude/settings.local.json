@@ -4,7 +4,8 @@
       "WebFetch",
       "Bash",
       "WebSearch",
-      "mcp__playwright"
+      "mcp__playwright",
+      "Skill(git:commit)"
     ]
   },
   "enableAllProjectMcpServers": true,
