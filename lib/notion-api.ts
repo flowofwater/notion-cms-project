@@ -1,7 +1,12 @@
 /**
  * Notion API 함수들
+ *
+ * 캐싱 전략:
+ * - React cache(): 동일 요청 중복 방지 (Request Memoization)
+ * - 페이지 레벨 revalidate: 60초마다 재검증 (ISR)
  */
 
+import { cache } from 'react'
 import { format } from 'date-fns'
 import { notion, DATABASE_ID } from './notion'
 import type { Post, NotionDatabaseFilter } from '@/types'
@@ -9,10 +14,15 @@ import type { Post, NotionDatabaseFilter } from '@/types'
 /**
  * Notion 데이터베이스에서 블로그 글 목록 가져오기
  *
+ * React cache()로 감싸서 동일한 요청은 중복 호출하지 않음
+ * 페이지 레벨에서 revalidate 설정 권장 (export const revalidate = 60)
+ *
  * @param filter - 필터 옵션 (카테고리, 태그, 상태, 검색어)
  * @returns Post 배열
  */
-export async function getPosts(filter?: NotionDatabaseFilter): Promise<Post[]> {
+export const getPosts = cache(async function getPosts(
+  filter?: NotionDatabaseFilter
+): Promise<Post[]> {
   try {
     const response = await notion.dataSources.query({
       data_source_id: DATABASE_ID,
@@ -59,15 +69,19 @@ export async function getPosts(filter?: NotionDatabaseFilter): Promise<Post[]> {
     console.error('getPosts 오류:', error)
     throw new Error('블로그 글 목록을 가져오는데 실패했습니다.')
   }
-}
+})
 
 /**
  * Slug로 개별 블로그 글 가져오기
  *
+ * React cache()로 감싸서 동일한 slug 요청은 중복 호출하지 않음
+ *
  * @param slug - URL slug (예: my-first-post)
  * @returns Post 또는 null
  */
-export async function getPostBySlug(slug: string): Promise<Post | null> {
+export const getPostBySlug = cache(async function getPostBySlug(
+  slug: string
+): Promise<Post | null> {
   try {
     const response = await notion.dataSources.query({
       data_source_id: DATABASE_ID,
@@ -89,14 +103,18 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
     console.error(`getPostBySlug('${slug}') 오류:`, error)
     return null
   }
-}
+})
 
 /**
  * 모든 카테고리 목록 가져오기
  *
+ * React cache()로 감싸서 동일한 요청은 중복 호출하지 않음
+ *
  * @returns 카테고리 문자열 배열 (중복 제거)
  */
-export async function getCategories(): Promise<string[]> {
+export const getCategories = cache(async function getCategories(): Promise<
+  string[]
+> {
   try {
     const response = await notion.dataSources.query({
       data_source_id: DATABASE_ID,
@@ -116,7 +134,7 @@ export async function getCategories(): Promise<string[]> {
     console.error('getCategories 오류:', error)
     return []
   }
-}
+})
 
 /**
  * Notion 페이지 객체를 Post 타입으로 변환
