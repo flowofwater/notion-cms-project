@@ -87,17 +87,14 @@ export const getPostBySlug = cache(async function getPostBySlug(
       page_size: 100,
     })
 
-    const page = response.results.find((p: any) => {
-      const slugProp = p.properties.slug || p.properties.Slug
-      if (!slugProp) return false
+    // 각 페이지를 Post로 변환 후 slug 비교
+    // (Slug 속성이 없는 경우 제목 자동 생성 slug와도 일치하도록)
+    for (const page of response.results) {
+      const post = convertNotionPageToPost(page as any)
+      if (post && post.slug === slug) return post
+    }
 
-      const slugValue = slugProp.rich_text?.[0]?.plain_text
-      return slugValue === slug
-    })
-
-    if (!page) return null
-
-    return convertNotionPageToPost(page)
+    return null
   } catch (error) {
     console.error(`getPostBySlug('${slug}') 오류:`, error)
     return null
@@ -136,6 +133,25 @@ export const getCategories = cache(async function getCategories(): Promise<
 })
 
 /**
+ * 제목으로 URL-safe slug 자동 생성
+ *
+ * 예: "나의 첫 번째 포스트" → "나의-첫-번째-포스트"
+ * 예: "Hello World!" → "hello-world"
+ *
+ * @param title - 글 제목
+ * @returns URL-safe slug 문자열
+ */
+function generateSlug(title: string): string {
+  return title
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w\uAC00-\uD7A3-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
+/**
  * Notion 페이지 객체를 Post 타입으로 변환
  *
  * @param page - Notion API 응답 페이지 객체
@@ -159,12 +175,8 @@ function convertNotionPageToPost(page: any): Post | null {
       return null
     }
 
-    // Slug (필수)
-    const slug = slugProp?.rich_text?.[0]?.plain_text
-    if (!slug) {
-      console.warn(`페이지 ${page.id}: slug가 없습니다.`)
-      return null
-    }
+    // Slug (없으면 제목으로 자동 생성)
+    const slug = slugProp?.rich_text?.[0]?.plain_text || generateSlug(title)
 
     // 카테고리 (필수)
     const category = categoryProp?.select?.name
@@ -180,12 +192,13 @@ function convertNotionPageToPost(page: any): Post | null {
       return null
     }
 
-    // 상태 (필수)
-    const status = statusProp?.select?.name as 'Draft' | 'Published' | undefined
-    if (!status || (status !== 'Draft' && status !== 'Published')) {
-      console.warn(`페이지 ${page.id}: 유효하지 않은 상태입니다.`)
+    // 상태 (필수) - Notion DB 실제 값: '게시' | '편집중'
+    const statusRaw = statusProp?.select?.name
+    if (!statusRaw || (statusRaw !== '게시' && statusRaw !== '편집중')) {
+      console.warn(`페이지 ${page.id}: 유효하지 않은 상태입니다. (${statusRaw})`)
       return null
     }
+    const status: 'Published' | 'Draft' = statusRaw === '게시' ? 'Published' : 'Draft'
 
     // 선택 속성 추출
     const tagProp = props.tag || props.Tags || props.tags
