@@ -9,9 +9,20 @@ import { siteConfig } from '@/lib/constants'
 
 export const revalidate = 60
 
-export const metadata: Metadata = {
-  title: `카테고리 | ${siteConfig.name}`,
-  description: '카테고리별 블로그 글 목록',
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: `카테고리 | ${siteConfig.name}`,
+    description: '카테고리별 블로그 글 목록',
+    openGraph: {
+      title: `카테고리 | ${siteConfig.name}`,
+      description: '카테고리별 블로그 글 목록',
+    },
+    twitter: {
+      card: 'summary',
+      title: `카테고리 | ${siteConfig.name}`,
+      description: '카테고리별 블로그 글 목록',
+    },
+  }
 }
 
 export default async function CategoriesPage() {
