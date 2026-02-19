@@ -16,10 +16,10 @@ interface PostHeaderProps {
 
 export function PostHeader({ post }: PostHeaderProps) {
   return (
-    <header className="space-y-6">
+    <header className="space-y-8">
       {/* 커버 이미지 */}
       {post.cover && (
-        <div className="aspect-video w-full overflow-hidden rounded-lg">
+        <div className="aspect-video w-full overflow-hidden rounded-2xl shadow-md">
           <img
             src={post.cover}
             alt={post.title}
@@ -29,10 +29,10 @@ export function PostHeader({ post }: PostHeaderProps) {
       )}
 
       {/* 메타 정보 */}
-      <div className="space-y-4">
+      <div className="space-y-5">
         <div className="flex flex-wrap items-center gap-3">
           <CategoryBadge category={post.category} />
-          <Separator orientation="vertical" className="h-4" />
+          <span className="text-muted-foreground/40">·</span>
           <time
             dateTime={post.publishedAt}
             className="text-sm text-muted-foreground"
@@ -42,24 +42,24 @@ export function PostHeader({ post }: PostHeaderProps) {
         </div>
 
         {/* 제목 */}
-        <h1 className="text-4xl font-bold leading-tight md:text-5xl">
+        <h1 className="text-4xl font-bold leading-tight tracking-tight md:text-5xl">
           {post.title}
         </h1>
 
         {/* 요약 */}
         {post.summary && (
-          <p className="text-lg text-muted-foreground">{post.summary}</p>
+          <p className="text-lg leading-relaxed text-muted-foreground">{post.summary}</p>
         )}
 
         {/* 태그 */}
         {post.tags.length > 0 && (
-          <div className="pt-2">
+          <div className="pt-1">
             <TagList tags={post.tags} maxDisplay={10} />
           </div>
         )}
       </div>
 
-      <Separator className="my-8" />
+      <Separator />
     </header>
   )
 }

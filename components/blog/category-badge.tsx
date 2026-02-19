@@ -2,6 +2,7 @@
  * 카테고리 뱃지 컴포넌트
  */
 
+import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 
 interface CategoryBadgeProps {
@@ -14,8 +15,10 @@ interface CategoryBadgeProps {
 export function CategoryBadge({ category, clickable = false }: CategoryBadgeProps) {
   return (
     <Badge
-      variant="secondary"
-      className={clickable ? 'cursor-pointer hover:bg-secondary/80' : ''}
+      className={cn(
+        'border-0 bg-primary/10 text-primary hover:bg-primary/20',
+        clickable && 'cursor-pointer'
+      )}
     >
       {category}
     </Badge>

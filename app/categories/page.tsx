@@ -44,7 +44,7 @@ export default async function CategoriesPage() {
     <div className="container max-w-screen-2xl py-12">
       {/* 헤더 */}
       <div className="mb-12 text-center">
-        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
+        <h1 className="bg-gradient-to-br from-foreground to-foreground/60 bg-clip-text text-4xl font-bold tracking-tight text-transparent sm:text-5xl">
           카테고리
         </h1>
         <p className="mt-4 text-lg text-muted-foreground">
@@ -55,7 +55,8 @@ export default async function CategoriesPage() {
       {/* 카테고리 목록 */}
       {categories.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 text-center">
-          <p className="text-xl text-muted-foreground">
+          <div className="mb-4 text-6xl">📂</div>
+          <p className="text-xl font-semibold text-muted-foreground">
             아직 카테고리가 없습니다
           </p>
         </div>
@@ -65,12 +66,16 @@ export default async function CategoriesPage() {
             <Link
               key={category}
               href={`/categories/${encodeURIComponent(category)}`}
-              className="group flex flex-col items-center justify-center rounded-lg border border-border/60 bg-card p-8 text-center shadow-sm transition-all hover:border-border hover:shadow-md"
+              className="group relative flex flex-col items-center justify-center overflow-hidden rounded-2xl border border-border/60 bg-card p-8 text-center shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md"
             >
-              <h2 className="text-lg font-semibold group-hover:text-primary">
+              <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-2xl font-bold text-primary transition-colors group-hover:bg-primary/20">
+                {category[0]}
+              </div>
+              <h2 className="text-base font-semibold transition-colors group-hover:text-primary">
                 {category}
               </h2>
-              <p className="mt-2 text-sm text-muted-foreground">
+              <p className="mt-1.5 text-sm text-muted-foreground">
                 {categoryCounts[category] ?? 0}개의 글
               </p>
             </Link>

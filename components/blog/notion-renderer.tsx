@@ -142,8 +142,10 @@ function NotionBlock({ block }: { block: any }) {
     case 'quote': {
       const { quote } = block
       return (
-        <blockquote className="my-4 border-l-4 border-primary pl-4 italic text-muted-foreground">
-          <RichText richText={quote.rich_text} />
+        <blockquote className="my-5 border-l-4 border-primary py-1 pl-5">
+          <div className="italic text-muted-foreground">
+            <RichText richText={quote.rich_text} />
+          </div>
         </blockquote>
       )
     }
@@ -152,10 +154,16 @@ function NotionBlock({ block }: { block: any }) {
     case 'code': {
       const { code } = block
       const codeText = code.rich_text.map((t: any) => t.plain_text).join('')
+      const language = code.language || 'plain text'
       return (
-        <pre className="my-4 overflow-x-auto rounded-lg bg-muted p-4">
-          <code className="font-mono text-sm">{codeText}</code>
-        </pre>
+        <div className="my-6 overflow-hidden rounded-xl border border-border/50 bg-zinc-950 dark:bg-zinc-900">
+          <div className="flex items-center border-b border-white/10 bg-white/5 px-4 py-2">
+            <span className="text-xs font-medium text-zinc-400">{language}</span>
+          </div>
+          <pre className="overflow-x-auto p-4">
+            <code className="font-mono text-sm text-zinc-100">{codeText}</code>
+          </pre>
+        </div>
       )
     }
 
@@ -192,9 +200,9 @@ function NotionBlock({ block }: { block: any }) {
         callout.icon?.type === 'emoji' ? callout.icon.emoji : '💡'
 
       return (
-        <div className="my-4 flex gap-3 rounded-lg border bg-muted/50 p-4">
-          <div className="text-xl">{icon}</div>
-          <div className="flex-1">
+        <div className="my-5 flex gap-3 rounded-xl border border-primary/20 bg-primary/5 p-4">
+          <div className="mt-0.5 text-xl">{icon}</div>
+          <div className="flex-1 text-sm leading-relaxed">
             <RichText richText={callout.rich_text} />
           </div>
         </div>

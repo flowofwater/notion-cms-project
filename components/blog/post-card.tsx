@@ -18,21 +18,23 @@ interface PostCardProps {
 
 export function PostCard({ post }: PostCardProps) {
   return (
-    <Link href={`/posts/${post.slug}`} className="block h-full">
-      <Card className="h-full transition-all hover:shadow-lg hover:scale-[1.02]">
-        {post.cover && (
-          <div className="relative aspect-video w-full overflow-hidden rounded-t-lg">
+    <Link href={`/posts/${post.slug}`} className="group block h-full">
+      <Card className="h-full overflow-hidden border-border/60 transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg">
+        {post.cover ? (
+          <div className="relative aspect-video w-full overflow-hidden">
             <Image
               src={post.cover}
               alt={post.title}
               fill
-              className="object-cover"
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           </div>
+        ) : (
+          <div className="h-1.5 bg-gradient-to-r from-primary via-primary/70 to-primary/30" />
         )}
 
-        <CardHeader className="space-y-2">
+        <CardHeader className="space-y-3 pb-3">
           <div className="flex items-center justify-between gap-2">
             <CategoryBadge category={post.category} />
             <time
@@ -43,22 +45,21 @@ export function PostCard({ post }: PostCardProps) {
             </time>
           </div>
 
-          {/* h2로 변경: h1(페이지 제목) 다음 단계 헤딩 */}
-          <h2 className="line-clamp-2 text-xl font-bold leading-tight">
+          <h2 className="line-clamp-2 text-lg font-bold leading-snug tracking-tight transition-colors group-hover:text-primary">
             {post.title}
           </h2>
         </CardHeader>
 
         {post.summary && (
-          <CardContent>
-            <p className="line-clamp-3 text-sm text-muted-foreground">
+          <CardContent className="pb-3">
+            <p className="line-clamp-3 text-sm leading-relaxed text-muted-foreground">
               {post.summary}
             </p>
           </CardContent>
         )}
 
         {post.tags.length > 0 && (
-          <CardFooter>
+          <CardFooter className="pt-0">
             <TagList tags={post.tags} maxDisplay={3} />
           </CardFooter>
         )}
